@@ -1,0 +1,35 @@
+** TODOs
+
+** 13 Feb 2018
+
+[[file:figure-test-error.pdf]] and [[file:figure-test-error.R]] copied from guillimin:PeakSegFPOP/figure-test-error.R
+
+#+BEGIN_SRC 
+!> mem.dt[set.dt, on=list(set, group)][order(vmem.MB)][vmem.MB<20e3]                                                                                                          
+                     set                  group   vmem.MB samples
+  1:            H3K36me3           kidneyCancer  4385.195       1
+  2:            H3K36me3                 kidney  4686.184       1
+  3:            H3K36me3                  bcell  4776.055       1
+  4:             H3K4me3           kidneyCancer  5359.148       1
+  5:  H3K4me3_TDH_ENCODE                  aorta  7001.996       3
+  6:             H3K4me3     skeletalMuscleCtrl  9045.609       3
+  7:  H3K4me3_TDH_ENCODE                  colon  9587.129       2
+  8:             H3K4me3                  bcell  9678.047       2
+  9: H3K36me3_TDH_ENCODE                  colon 10340.926       2
+ 10: H3K36me3_TDH_ENCODE                  aorta 10350.809       3
+ 11:            H3K36me3       skeletalMuscleMD 10661.770       3
+ 12:            H3K36me3     skeletalMuscleCtrl 10761.762       3
+ 13:             H3K4me3                 kidney 11781.699       1
+ 14: H3K36me3_TDH_ENCODE         skeletalMuscle 12041.398       4
+ 15: H3K36me3_TDH_ENCODE                thyroid 12203.094       4
+ 16:             H3K4me3       skeletalMuscleMD 12411.219       4
+ 17:            H3K36me3               monocyte 12955.910       5
+ 18:             H3K4me3 leukemiaCD19CD10BCells 14451.785       1
+ 19:             H3K4me3                  tcell 15924.980       5
+ 20:  H3K4me3_TDH_ENCODE         skeletalMuscle 15998.684       6
+ 21:  H3K4me3_TDH_ENCODE                thyroid 16160.828       4
+ 22:            H3K36me3                  tcell 16259.289       5
+ 23:             H3K4me3               monocyte 19926.812       6
+                     set                  group   vmem.MB samples
+ > 
+#+END_SRC
