@@ -51,7 +51,45 @@
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{figure-test-error}
+  \includegraphics[width=\textwidth]{figure-test-error.pdf}
+  \vskip -0.5cm
+  \caption{Comparison of peak detection error rate in two histone
+    modification ChIP-seq experiments (panels from top to bottom) and
+    two sample groups (panels from left to right). MACS, JAMM, and
+    DFilter were run with parameters indicated by the authors for
+    either sharp H3K4me3 or broad H3K36me3 data; parameters of
+    PeakSegPipeline were learned using the train samples, and error
+    rates were computed using the test samples. It is clear that the
+    error rate of PeakSegPipeline is competitive with the other tools,
+    and sometimes significantly lower.}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figure-compare-size-panels.pdf}
+  \vskip -0.5cm
+  \caption{Peak size varies with epigenome experiment
+    type. PeakSegPipeline was trained on each data set, and used to
+    predict peaks for each data set. It is clear that there are
+    several distinct categories of peak sizes: large 30-50 kb
+    (H3K36me3), medium 1--5 kb (H3K9me3, H3K27me3, H3K4me1, H3K27ac,
+    H3K4me3), and small 200--400 b (ATAC, CTCF).}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figure-top100-absolute.pdf}
+  \vskip -0.5cm
+  \caption{PeakSegPipeline detects peaks which are more well-defined
+    relative to background than other tools (relative position of peak
+    border shown in grey lines). The top 100 most likely/significant
+    peaks are shown for each tool (panels from left to right) for one
+    monocyte sample.  \textbf{Top}: broad H3K36me3 data, for which the
+    most likely peaks are $\approx 100$ kb for PeakSegPipeline, but
+    much smaller for the other tools. \textbf{Bottom}: sharp H3K4me3
+    data, for which PeakSegPipeline and DFilter recover peaks with
+    relatively large signal, but JAMM and MACS2 detect many noisy
+    regions.}
 \end{figure}
 
 \section{Time and memory requirements}
@@ -59,7 +97,7 @@
 PeakSegPipeline uses algorithms with log-linear time complexity in the
 number of samples and base pairs. The PeakSegFPOP algorithm for peak
 prediction in a single sample with $n$ coverage data (lines in the
-bedGraph file) uses $O(\log n)$ memory, $O(n \log n)$ disk space, and
+bedGraph file) uses $O(\log n)$ memory, $O(n \log n)$ disk space, and 
 $O(n\log n)$ time
 \citep{Hocking-constrained-changepoint-detection}. In practice we
 assign each job 10GB RAM and 24 hours of compute time. The total

@@ -1,6 +1,15 @@
 ** TODOs
 
+- figure showing steps of pipeline.
+- figure showing meta-peak plot for top 100 and all peaks.
+- figure showing peak size of all algos on H3K4, H3K36 data
+- figure showing value of joint peaks.
+  
 ** 13 Feb 2018
+
+[[file:figure-compare-size-panels.pdf]] and [[file:figure-compare-size.R]] copied from guillimin:PeakSegFPOP/figure-compare-size.R
+
+[[file:figure-top100-absolute.pdf]] and [[file:figure-top100-absolute.R]] copied from guillimin:PeakSegFPOP/figure-macs-pvalues.R
 
 [[file:figure-test-error.pdf]] and [[file:figure-test-error.R]] copied from guillimin:PeakSegFPOP/figure-test-error.R
 
