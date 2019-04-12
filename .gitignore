@@ -1,2 +1,8 @@
+images
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
 *~
 auto
