@@ -1,7 +1,7 @@
-library(data.table)
+source("packages.R")
 
 db.list <- list()
-for(data.type in c("path", "problems", "loss")){
+for(data.type in c("problems", "loss")){
   db.tsv <- paste0(
     "db-", data.type, ".tsv")
   if(!file.exists(db.tsv)){
@@ -13,13 +13,13 @@ for(data.type in c("path", "problems", "loss")){
   db.list[[data.type]] <- fread(db.tsv)
 }
 
-db.err <- db.loss[, list(
+db.err <- db.list$loss[, list(
   min.err=min(remove.errors),
   max.err=max(remove.errors)
   ), by=list(prob.id, peaks)]
 db.err[min.err != max.err]#TODO investigate why min.err does not equal max.err
-db.err <- db.loss[order(prob.id, time.computed), .SD[1], by=list(prob.id, peaks)]
-db.path.err <- db.err[db.path, on=list(prob.id, peaks)]
+
+db.path.err <- db.list$loss
 peak.type <- "remove"
 for(col.name in c("errors", "fp", "fn")){
   old.name <- paste0(peak.type, ".", col.name)
@@ -27,8 +27,17 @@ for(col.name in c("errors", "fp", "fn")){
 }
 err.not.na <- db.path.err[!is.na(errors)]
 pid <- 1155
-prob <- db.problems[prob.id==pid]
-one <- err.not.na[prob.id==pid]
+prob <- db.list$problems[prob.id==pid]
+one.unsorted <- err.not.na[prob.id==pid][!is.na(join.fn)]
+one.peaks.increasing <- one.unsorted[order(peaks, total.loss)][c(TRUE, diff(peaks)>0)]
+one.peaks.increasing[, which(diff(total.loss)>0)]
+one.peaks.increasing[32175:32185]
+one.loss.decreasing <- one.unsorted[order(-total.loss)][c(TRUE, diff(total.loss)<0)]
+one.loss.decreasing[, which(diff(peaks)<0)]
+one.loss.decreasing[55390:55400]
+one <- data.table(penaltyLearning::modelSelection(
+  one.unsorted,
+  "total.loss", "peaks"))
 
 approx.target <- function
 ### Compute target interval for a segmentation problem. This function
@@ -40,7 +49,7 @@ approx.target <- function
 ### problem.dir/target.minutes;
 ### the search will stop at a sub-optimal target interval
 ### if this many minutes has elapsed. Useful for testing environments
-### with build time limits (travis). 
+### with build time limits (travis).
 (verbose=0
 ){
   ## Compute the label error for one penalty parameter.
@@ -51,7 +60,7 @@ approx.target <- function
     data.table(
       iteration,
       one[min.lambda <= pen.num & pen.num <= max.lambda])
-  }  
+  }
   error.list <- list()
   next.pen <- c(0, Inf)
   iteration <- 0
@@ -177,12 +186,12 @@ ggplot()+
     xend=max.log.lambda, yend=value),
     data=seg.dt[variable=="errors"])
 
-seg.dt[, facet := fac(ifelse(
-  variable %in% c("fp", "fn"), "errors", variable))]
 tlev <- "iterations"
 fac <- function(x){
   factor(x, c("log10.peaks", "errors", tlev))
 }
+seg.dt[, facet := fac(ifelse(
+  variable %in% c("fp", "fn"), "errors", variable))]
 seg.size <- 2
 small.size <- 1.5
 efac <- function(x){
@@ -213,11 +222,11 @@ approx.info <- iterations.ord[, data.table(
   data=prob$bedGraph.lines)]
 gg <- ggplot()+
   theme_bw()+
-  theme(panel.margin=grid::unit(0, "lines"))+
+  theme(panel.spacing=grid::unit(0, "lines"))+
   facet_grid(facet ~ ., scales="free")+
   scale_x_continuous("log(penalty)")+
   geom_text(aes(
-    10, 60, 
+    10, 60,
     label=sprintf("%.0f days to compute exact target interval, (%.4f, %.4f)
 by computing path of %d models for
 one chrom subset with %d data", days, min.log.lambda, max.log.lambda, models, data)),
@@ -225,7 +234,7 @@ color=interval.color,
 hjust=0,
 data=fullpath.dt)+
   geom_text(aes(
-    10, max.iterations, 
+    10, max.iterations,
     label=sprintf("%.0f minutes to compute approximate target interval, (%.4f, %.4f)
 by computing approximate error function using %d models/penalties ", minutes, min.log.lambda, max.log.lambda, models)),
 hjust=0,
@@ -250,7 +259,7 @@ data=approx.info)+
     color=interval.color,
     data=data.table(peak.range, facet=fac("log10.peaks")))+
   geom_segment(aes(
-    min.log.lambda, value, 
+    min.log.lambda, value,
     xend=max.log.lambda, yend=value),
     size=seg.size,
     data=seg.dt[variable=="log10.peaks"])+
@@ -276,7 +285,7 @@ data=approx.info)+
   geom_point(aes(
     log(penalty), iteration),
     shape=21,
-    fill="white",
+    fill="grey",
     color="black",
     size=3,
     data=data.table(target.list$models, facet=fac(tlev)))+
