@@ -4,6 +4,7 @@
 - figure showing meta-peak plot for top 100 and all peaks.
 - figure showing peak size of all algos on H3K4, H3K36 data
 - figure showing value of joint peaks.
+- see https://github.com/tdhock/target-interval-paper/issues/1 repo for related figures for target interval search algo on smaller data
   
 ** 13 Feb 2018
 
